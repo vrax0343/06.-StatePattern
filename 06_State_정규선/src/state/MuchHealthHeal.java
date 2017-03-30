@@ -1,23 +1,29 @@
 package state;
 
 public class MuchHealthHeal implements State{
-
-	@Override
-	public void gainHealth() {
-		// TODO Auto-generated method stub
-		
+	NewUnit nu;
+	
+	public MuchHealthHeal(NewUnit nu) {
+		super();
+		this.nu = nu;
 	}
 
 	@Override
-	public void gainMana() {
+	public void selfHeal() {
 		// TODO Auto-generated method stub
+//		System.out.println(nu.getType() + "자가치료 시작");
+		if(nu.getMana() <= 0){
+			System.out.println(nu.getType() + "의 마나가 부족합니다");
+			nu.setState(nu.getCantSelfHeal());
+			nu.check = 1;
+		} else{
+			nu.setHealth(nu.getHealth()+2,2);
+			nu.setMana(nu.getMana()-1);
+			System.out.println("남은 마나량은: '"+nu.getMana()+"'");
+		}
 		
-	}
-
-	@Override
-	public void loseMana() {
-		// TODO Auto-generated method stub
 		
+		System.out.println();
 	}
 
 }

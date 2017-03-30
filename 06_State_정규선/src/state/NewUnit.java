@@ -1,7 +1,6 @@
 package state;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import behavior.attack.AttackBehavior;
 import behavior.movement.MovementBehavior;
@@ -10,178 +9,200 @@ import unit.Unit;
 
 public class NewUnit {
 	
-//	ArrayList<Unit> unitList;
-//	ArrayList<NewUnit> newUnitList=new ArrayList<NewUnit>();
-	
-	
-	
 	String type = "";
 	int locationX=0, locationY=0;
 	int health=0;
-	int mana, maxmana, maxhealth=0;
+	int mana, maxMana, maxHealth=0;
 	
 	AttackBehavior attack = null;
 	MovementBehavior movement = null;
 	WeaponBehavior weapon=null;
 	
 	State cantSelfHeal;
+	State lessHealthHeal;
+	State muchHealthHeal;
 	
 	State state = cantSelfHeal;
-
 	
-	int attackCount,moveCount = 0;
+	int check=0;
+	int[] stackCountArr = {0,0};
 	
 	public NewUnit() {
 		super();
+		cantSelfHeal = new CantSelfHeal(this);
+		lessHealthHeal = new LessHealthHeal(this);
+		muchHealthHeal = new MuchHealthHeal(this);
+
+		state = cantSelfHeal;
 	}
 	
 	public NewUnit(Unit unit) {
 		super();
 	}
 	
-	public ArrayList<NewUnit> addNewUnit(Unit unit){
-		Unit tempUnit;
-		ArrayList<Unit> unitList = unit.getUnitList();
-		Iterator<Unit> iterator = unitList.iterator();
-		ArrayList<NewUnit> newUnitList=new ArrayList<NewUnit>();
-		
-		while(iterator.hasNext()){
-			NewUnit tempNewUnit = new NewUnit();
-			tempUnit = iterator.next();
-			tempNewUnit.type = tempUnit.getType();
-			tempNewUnit.locationX = tempUnit.getLocationX();
-			tempNewUnit.locationY = tempUnit.getLocationY();
-			tempNewUnit.health = tempUnit.getHealth();
-			tempNewUnit.attack = tempUnit.getAttackBehavior();
-			tempNewUnit.movement = tempUnit.getMovementBehavior();
-			tempNewUnit.weapon = tempUnit.getWeaponBehavior();
-			
-			tempNewUnit.maxhealth = tempUnit.getHealth() * 2;
-			tempNewUnit.maxmana = tempNewUnit.maxhealth;
-			tempNewUnit.mana = tempNewUnit.maxhealth;
-//			this.cantSelfHeal = new CantSelfHeal(this);
-			newUnitList.add(tempNewUnit);
-		}
-		return newUnitList;
-	}
-	
-	public void cantSelfHeal(){
-		state.gainHealth();
+	public void doSelfHeal(){
+		state.selfHeal();
 	}
 
 	
 	public void attack(){
-		this.attackCount+=1;
-		if(this.attackCount >= 3) {
-			this.attackCount = 0;
-			this.health +=1;
-		}
 		this.attack.attack();
+		this.stackCountArr[0]+=1;
+		stackCounterCheck();
+		
 	}
+	public void move(int x, int y){
+		System.out.println("---"+this.getType() + " is moving---");
+		System.out.print("[Before]: (" + this.locationX+","+this.locationY+")");
+		int[] tempIntArr=this.movement.move(this.getLocationX(),x,this.getLocationY(),y);
+		this.setLocationX(tempIntArr[0]);
+		this.setLocationY(tempIntArr[1]);
+		System.out.println(" [After]: (" + this.locationX+","+this.locationY+")");
+		this.stackCountArr[1]+=1;
+		stackCounterCheck();
+	}
+	
+	
+	public void stackCounterCheck(){
+		int value = this.stackCountArr[0] + this.stackCountArr[1];
+		if(value >= 3) {
+			int health = this.health;
+			System.out.print("공격: "+this.stackCountArr[0] +
+								"\t이동: "+this.stackCountArr[1]+
+								"\t총 3회가 되었기에 체력을 1 증가시킵니다.\t");
+			this.stackCountArr = new int[] {0,0};
+			this.health +=1;
+			System.out.println("["+health+" -> "+this.health+"]");
+			
+		}else {
+			
+		}
+	}
+	
+	
+	
+	
 	
 	@Override
 	public String toString() {
 		return "NewUnit [type=" + type + ", locationX=" + locationX + ", locationY=" + locationY + ", health=" + health
-				+ ", mana=" + mana + ", maxmana=" + maxmana + ", maxhealth=" + maxhealth + ", attack=" + attack
+				+ ", mana=" + mana + ", maxMana=" + maxMana + ", maxHealth=" + maxHealth + ", attack=" + attack
 				+ ", movement=" + movement + ", weapon=" + weapon + ", cantSelfHeal=" + cantSelfHeal + ", state="
 				+ state + "]";
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//getter
+	
 	public String getType() {
 		return type;
 	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public int getLocationX() {
 		return locationX;
 	}
-
-	public void setLocationX(int locationX) {
-		this.locationX = locationX;
-	}
-
 	public int getLocationY() {
 		return locationY;
 	}
-
-	public void setLocationY(int locationY) {
-		this.locationY = locationY;
-	}
-
 	public int getHealth() {
 		return health;
 	}
-
-	public void setHealth(int health) {
-		this.health = health;
-	}
-
 	public int getMana() {
 		return mana;
 	}
-
-	public void setMana(int mana) {
-		this.mana = mana;
+	public int getmaxMana() {
+		return maxMana;
 	}
-
-	public int getMaxmana() {
-		return maxmana;
+	public int getmaxHealth() {
+		return maxHealth;
 	}
-
-	public void setMaxmana(int maxmana) {
-		this.maxmana = maxmana;
-	}
-
-	public int getMaxhealth() {
-		return maxhealth;
-	}
-
-	public void setMaxhealth(int maxhealth) {
-		this.maxhealth = maxhealth;
-	}
-
 	public AttackBehavior getAttack() {
 		return attack;
 	}
-
-	public void setAttack(AttackBehavior attack) {
-		this.attack = attack;
-	}
-
 	public MovementBehavior getMovement() {
 		return movement;
 	}
-
-	public void setMovement(MovementBehavior movement) {
-		this.movement = movement;
-	}
-
 	public WeaponBehavior getWeapon() {
 		return weapon;
 	}
-
-	public void setWeapon(WeaponBehavior weapon) {
-		this.weapon = weapon;
-	}
-
 	public State getCantSelfHeal() {
 		return cantSelfHeal;
 	}
-
-	public void setCantSelfHeal(State cantSelfHeal) {
-		this.cantSelfHeal = cantSelfHeal;
+	public State getLessHealthHeal() {
+		return lessHealthHeal;
 	}
-
+	public State getMuchHealthHeal() {
+		return muchHealthHeal;
+	}
 	public State getState() {
 		return state;
 	}
-
+	
+	//setter
+	public void setType(String type) {
+		this.type = type;
+	}
+	public void setLocationX(int locationX) {
+		this.locationX = locationX;
+	}
+	public void setLocationY(int locationY) {
+		this.locationY = locationY;
+	}
+	public void setHealth(int health,int value) {
+		System.out.println("+"+this.getType() + " 에 체력을  '"+value+"' 더합니다");
+		System.out.print("[Before]: " + this.health);
+		if (health > this.maxHealth) 
+			this.health = this.maxHealth;
+		else 
+			this.health = health;
+		System.out.println("\t[After]: " + this.health);
+	}
+	public void setHealth(int health) {
+		System.out.println("---"+this.getType() + " 의 체력을 수정합니다---");
+		System.out.print("[Before]: " + this.health);
+		if (health > this.maxHealth) 
+			this.health = this.maxHealth;
+		else 
+			this.health = health;
+		System.out.println("\t[After]: " + this.health);
+	}
+	public void setMana(int mana) {
+		if (mana > this.maxMana) 
+			this.mana = this.maxMana;
+		else 
+			this.mana = mana;
+	}
+	public void setmaxMana(int maxMana) {
+		this.maxMana = maxMana;
+	}
+	public void setmaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+	public void setAttack(AttackBehavior attack) {
+		this.attack = attack;
+	}
+	public void setMovement(MovementBehavior movement) {
+		this.movement = movement;
+	}
+	public void setWeapon(WeaponBehavior weapon) {
+		this.weapon = weapon;
+	}
+	public void setCantSelfHeal(State cantSelfHeal) {
+		this.cantSelfHeal = cantSelfHeal;
+	}
 	public void setState(State state) {
 		this.state = state;
 	}
+
+	
+
 
 	
 	

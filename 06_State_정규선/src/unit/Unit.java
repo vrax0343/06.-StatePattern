@@ -96,7 +96,8 @@ public class Unit extends Observable{
 		}
 		unitList.add(tempUnit);
 		System.out.println("---"+tempUnit.type+" 추가 완료---");
-		System.out.println(tempUnit.toString());
+//		System.out.println(tempUnit.toString());
+		System.out.println();
 	}
 	
 	public void moveDirect(String type, int x, int y){

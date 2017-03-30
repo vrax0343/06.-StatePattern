@@ -1,88 +1,137 @@
 package main;
 
 import unit.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import behavior.weapon.*;
 import decorator.SuperAttack;
 import decorator.SuperMove;
 import factory.af.unit.TeamUnit;
 import factory.fm.*;
 import function.FindUnit;
+import state.MakingNewUnit;
+import state.NewUnit;
 
 
 public class MainTest {
+	static final int KNIGHT = 0;
+	static final int CITIZEN = 1; 
+	static final int MAGE = 2;
 	
 	public static void main(String[] args){		
 		
+		Unit unit = Unit.getInstance();
+		
+		System.out.println("=======================================================");
+		System.out.println("1. 중립 기사, 시민, 마법사를 생성한다");
+		System.out.println("=======================================================");
+		
+		unit.addUnit("Knight");
+		unit.addUnit("Citizen");
+		unit.addUnit("Mage");
+		unit.addUnit("Mage");
+		
+		ArrayList<NewUnit> newUnitList = new MakingNewUnit().makeNewUnitArray(unit);
+		
+		NewUnit knight = newUnitList.get(KNIGHT);
+		NewUnit citizen = newUnitList.get(CITIZEN);
+		NewUnit mage = newUnitList.get(MAGE);
 		
 		
 		System.out.println("=======================================================");
-		System.out.println("1. 청팀, 적팀, 중립유닛을 종류별로 생성한다.");
+		System.out.println("2. 기사 체력은 50, 시민 체력은 1, 마법사 체력은 18가 되었다");
 		System.out.println("=======================================================");
 		
-		factory.af.TeamFactoryStore btf = new factory.af.BlueTeamFactory();
-		factory.af.TeamFactoryStore rtf = new factory.af.RedTeamFactory();
-		factory.af.TeamFactoryStore ntf = new factory.af.NeutralTeamFactory();
-		factory.af.unit.TeamUnit bu,ru,nu= null;
-		
-		factory.af.unit.TeamUnit  num = ntf.makeUnit("Mage");
-		factory.af.unit.TeamUnit  nuc = ntf.makeUnit("Civilian");
-		factory.af.unit.TeamUnit  nuk = ntf.makeUnit("Knight");
-		System.out.println();
-		
-		factory.af.unit.TeamUnit  bum = btf.makeUnit("Mage");
-		factory.af.unit.TeamUnit  buc = btf.makeUnit("Civilian");
-		factory.af.unit.TeamUnit  buk = btf.makeUnit("Knight");
-		System.out.println();
-		
-		factory.af.unit.TeamUnit  rum = rtf.makeUnit("Mage");
-		factory.af.unit.TeamUnit  ruc = rtf.makeUnit("Civilian");
-		factory.af.unit.TeamUnit  ruk = rtf.makeUnit("Knight");
-		System.out.println();
-		
-		
-		System.out.println("=======================================================");
-		System.out.println("2. 청팀의 기사가 각성(공격형) 했다. ");
-		System.out.println("=======================================================");
-		buk = new SuperAttack(buk);
+		knight.setHealth(50);
+		citizen.setHealth(1);
+		mage.setHealth(18);
 		
 		System.out.println();
 	
 		System.out.println("=======================================================");
-		System.out.println("3. 청팀의 기사가 공격한다.");
+		System.out.println("3. 기사가 공격한뒤 자기치료를 한다.");
 		System.out.println("=======================================================");
-		buk.attack();
-		System.out.println();
-	
-		System.out.println("=======================================================");
-		System.out.println("4. 적팀의 기사가 각성(이동형) 했다.");
-		System.out.println("=======================================================");
-		ruk = new SuperMove(ruk);
-		System.out.println();
-	
-		System.out.println("=======================================================");
-		System.out.println("5. 적팀의 기사가 100, 100으로 이동한다.");
-		System.out.println("=======================================================");
-		ruk.move(100, 100);
-		System.out.println();
-	
-		System.out.println("=======================================================");
-		System.out.println("6. 중립팀 기사가 각성(공격형, 이동형 모두)했다.");
-		System.out.println("=======================================================");
-		nuk = new SuperMove(nuk);
-		nuk = new SuperAttack(nuk);
 		
+		knight.attack();
+		knight.doSelfHeal();
 		System.out.println();
 	
 		System.out.println("=======================================================");
-		System.out.println("7. 중립팀 기사가 100, 100으로 이동한다.");
+		System.out.println("4. 시민이 자기치료를 수행한디.");
 		System.out.println("=======================================================");
-		nuk.move(100, 100);
+		
+		citizen.doSelfHeal();
 		System.out.println();
 	
 		System.out.println("=======================================================");
-		System.out.println("8. 중립팀 기사가 공격한다.");
+		System.out.println("5. 마법사가 +10, +10 이동뒤 자기치료를 한다");
 		System.out.println("=======================================================");
-		nuk.attack();
+		
+		mage.move(10, 10);
+		System.out.println();
+		mage.doSelfHeal();
+		System.out.println();
+	
+		System.out.println("=======================================================");
+		System.out.println("6. 기사와 마법사 마력이 1이되었다. ");
+		System.out.println("=======================================================");
+		
+		knight.setMana(1);
+		System.out.print("기사의 마력 ="+knight.getMana());
+		
+		mage.setMana(1);
+		System.out.println("\t마법사의 마력 ="+mage.getMana());
+//		System.out.println(mage.getMana());
+		System.out.println();
+	
+		System.out.println("=======================================================");
+		System.out.println("7. 기사가 공격한뒤 자기치료를 한다.");
+		System.out.println("=======================================================");
+		
+		knight.attack();
+		knight.doSelfHeal();
+		System.out.println();
+	
+		System.out.println("=======================================================");
+		System.out.println("8. 기사가 공격한뒤 자기치료를 한다.");
+		System.out.println("=======================================================");
+		knight.attack();
+		System.out.println();
+		knight.doSelfHeal();
+		System.out.println();
+		
+		
+		System.out.println("=======================================================");
+		System.out.println("9. 기사가 공격한뒤 자기치료를 한다.");
+		System.out.println("=======================================================");
+		knight.attack();
+		System.out.println();
+		knight.doSelfHeal();
+		System.out.println();
+
+		System.out.println("=======================================================");
+		System.out.println("10. 마법사가 자기치료를 한다.");
+		System.out.println("=======================================================");
+		
+		mage.doSelfHeal();
+		System.out.println();
+		
+		System.out.println("=======================================================");
+		System.out.println("11. 마법사가 공격한뒤 자기치료를 한다.");
+		System.out.println("=======================================================");
+		mage.attack();
+		System.out.println();
+		mage.doSelfHeal();
+		System.out.println();
+		
+		System.out.println("=======================================================");
+		System.out.println("12. 마법사가 공격한뒤 자기치료를 한다.");
+		System.out.println("=======================================================");
+		mage.attack();
+		System.out.println();
+		mage.doSelfHeal();
 		System.out.println();
 
 	

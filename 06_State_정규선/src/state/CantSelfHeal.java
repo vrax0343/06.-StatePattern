@@ -8,22 +8,20 @@ public class CantSelfHeal implements State {
 		this.nu = nu;
 	}
 
-	@Override
-	public void gainHealth() {
-		// TODO Auto-generated method stub
-		System.out.println("자힐불가/체력증가");
-	}
 
 	@Override
-	public void gainMana() {
+	public void selfHeal() {
 		// TODO Auto-generated method stub
-		System.out.println("자힐불가/마나증가");
-	}
-
-	@Override
-	public void loseMana() {
-		// TODO Auto-generated method stub
-		System.out.println("자힐불가/마나감소");
+		if(nu.check==0)
+			System.out.println("유닛 생성 후 최초의 자가치료는 불가능 합니다.");
+		else if(nu.check==1)
+			System.out.println(nu.getType() + "의 마나가 부족합니다");
+		int tempHealth=nu.getHealth();
+		if(tempHealth <50) 
+			nu.setState(nu.getLessHealthHeal());
+		else
+			nu.setState(nu.getMuchHealthHeal());
+		System.out.println();
 	}
 
 }
