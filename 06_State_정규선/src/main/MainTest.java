@@ -83,7 +83,6 @@ public class MainTest {
 		
 		mage.setMana(1);
 		System.out.println("\t마법사의 마력 ="+mage.getMana());
-//		System.out.println(mage.getMana());
 		System.out.println();
 	
 		System.out.println("=======================================================");

@@ -66,13 +66,17 @@ public class NewUnit {
 	public void stackCounterCheck(){
 		int value = this.stackCountArr[0] + this.stackCountArr[1];
 		if(value >= 3) {
-			int health = this.health;
+			int mana = this.mana;
 			System.out.print("공격: "+this.stackCountArr[0] +
 								"\t이동: "+this.stackCountArr[1]+
-								"\t총 3회가 되었기에 체력을 1 증가시킵니다.\t");
+								"\t총 3회가 되었기에 마나를 1 증가시킵니다.\t");
 			this.stackCountArr = new int[] {0,0};
-			this.health +=1;
-			System.out.println("["+health+" -> "+this.health+"]");
+			this.mana +=1;
+			if(this.state instanceof CantSelfHeal){
+				if(this.health < 50) this.state = new LessHealthHeal(this);
+				else this.state=new MuchHealthHeal(this);
+			}
+			System.out.println("["+mana+" -> "+this.mana+"]");
 			
 		}else {
 			

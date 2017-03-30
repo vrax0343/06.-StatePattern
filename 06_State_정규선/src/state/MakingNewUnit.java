@@ -12,7 +12,6 @@ public class MakingNewUnit {
 		Unit tempUnit;
 		ArrayList<Unit> unitList = u.getUnitList();
 		Iterator<Unit> iterator = unitList.iterator();
-//		ArrayList<NewUnit> newUnitList=new ArrayList<NewUnit>();
 		
 		
 		
@@ -30,9 +29,6 @@ public class MakingNewUnit {
 			tempNewUnit.maxHealth = tempUnit.getHealth() * 2;
 			tempNewUnit.maxMana = tempNewUnit.maxHealth;
 			tempNewUnit.mana = tempNewUnit.maxHealth;
-			
-			
-//			this.cantSelfHeal = new CantSelfHeal(this);
 			
 			newUnitList.add(tempNewUnit);
 		}
